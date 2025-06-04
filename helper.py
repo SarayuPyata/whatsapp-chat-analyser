@@ -19,7 +19,8 @@ def fetch_stats(selected_user, df):
         words.extend(message.split())
 
     # fetch number of media messages
-    num_media_messages = df[df["message"] == "<Media omitted>\n"].shape[0]
+    # More flexible check for common media message markers
+    num_media_messages = df[df["message"].str.lower().str.contains("media omitted", na=False)].shape[0]
 
     # fetch number of links shared
     links = []
@@ -204,4 +205,3 @@ def activity_heatmap(selected_user, df):
 
     user_heatmap = df_filtered.pivot_table(index="day_name", columns="period", values="message", aggfunc="count").fillna(0)
     return user_heatmap
-
